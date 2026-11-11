@@ -1,0 +1,36 @@
+# Slide 11 - SAMPLE deployment workflow (GitHub hosting vs application hosting)
+#
+# This only runs when you trigger it manually (Actions tab -> "Deploy to Azure" -> Run workflow),
+# so it will never fail on PRs. To use it for real:
+#   1. Create an Azure App Service (Windows or Linux, .NET 8).
+#   2. Download its Publish Profile from the Azure portal.
+#   3. Add it as a repository secret named AZURE_WEBAPP_PUBLISH_PROFILE.
+#   4. Set AZURE_WEBAPP_NAME below to your App Service name.
+name: Deploy to Azure
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: plant360-demo   # <-- change to your App Service name
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - run: dotnet test Plant360.sln --configuration Release
+
+      - run: dotnet publish src/Plant360.Api/Plant360.Api.csproj --configuration Release --output ./publish
+
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish

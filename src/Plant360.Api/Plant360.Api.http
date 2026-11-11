@@ -1,0 +1,28 @@
+@host = http://localhost:5080
+
+### Health check
+GET {{host}}/health
+
+### List devices
+GET {{host}}/devices
+
+### Register a valid device
+POST {{host}}/devices
+Content-Type: application/json
+
+{ "id": "DEV-001", "name": "Boiler Meter", "location": "Block A" }
+
+### Register a device with an EMPTY id (accepted on master - rejected after the feature)
+POST {{host}}/devices
+Content-Type: application/json
+
+{ "id": "", "name": "Unknown", "location": "Block B" }
+
+### Register a DUPLICATE device (accepted on master - rejected after the feature)
+POST {{host}}/devices
+Content-Type: application/json
+
+{ "id": "DEV-001", "name": "Copy of Boiler Meter", "location": "Block A" }
+
+### Billing estimate
+GET {{host}}/billing/estimate?units=100

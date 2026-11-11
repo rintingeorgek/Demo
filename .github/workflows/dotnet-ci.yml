@@ -1,0 +1,23 @@
+# Slide 10 - Automate build and tests with GitHub Actions
+# Runs on every Pull Request into master and on every push to master.
+name: .NET CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4          # Gets the repository code
+
+      - uses: actions/setup-dotnet@v4      # Installs the required SDK
+        with:
+          dotnet-version: '8.0.x'
+
+      - run: dotnet restore Plant360.sln   # Restores NuGet packages
+      - run: dotnet build Plant360.sln --configuration Release --no-restore   # Compiles the solution
+      - run: dotnet test Plant360.sln --configuration Release --no-build      # Runs automated tests
