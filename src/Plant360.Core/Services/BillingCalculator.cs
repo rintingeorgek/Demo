@@ -17,4 +17,5 @@ public class BillingCalculator
 
         return FixedCharge + (unitsConsumed * RatePerUnit);
     }
+
 }
