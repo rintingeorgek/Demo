@@ -13,8 +13,6 @@ public class BillingCalculator
         if (unitsConsumed < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(unitsConsumed), "Units consumed cannot be negative.");
-        }
-
-        return FixedCharge + (unitsConsumed / RatePerUnit);
+        }return FixedCharge + (unitsConsumed / RatePerUnit);
     }
 }
